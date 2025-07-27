@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Journey - Ella & Lyle</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <style>
+        /* --- GLOBAL STYLES & VARIABLES --- */
+        :root {
+            --bg-color: #1a1a2e;
+            --ella-pink: #ffafcc;
+            --lyle-blue: #a2d2ff;
+            --text-color: #ffffff;
+            --font-heading: 'Press Start 2P', cursive;
+            --font-body: 'VT323', monospace;
+            --font-story: 'Dancing Script', cursive;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+        }
+
+        /* --- INTRO STORY SCREEN --- */
+        #story-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            z-index: 20000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            pointer-events: none;
+        }
+        
+        #story-screen.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        #story-content {
+            max-width: 800px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 3px solid var(--ella-pink);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 175, 204, 0.5);
+        }
+        
+        #story-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: var(--ella-pink);
+            text-shadow: 0 0 10px rgba(255, 175, 204, 0.7);
+        }
+        
+        #story-text {
+            font-family: var(--font-story);
+            font-size: 2.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        
+        #story-continue {
+            padding: 12px 30px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(162, 210, 255, 0.7);
+        }
+        
+        #story-continue:hover {
+            background: var(--ella-pink);
+            transform: scale(1.05);
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        #login-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #login-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 1rem;
+        }
+
+        .crewmate-container {
+            display: flex;
+            gap: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .crewmate {
+            width: 80px;
+            height: 100px;
+            border-radius: 40px 40px 25px 25px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .crewmate-pink { background-color: var(--ella-pink); border: 4px solid #c98da1; }
+        .crewmate-blue { background-color: var(--lyle-blue); border: 4px solid #81a7cc; animation-delay: -1.5s; }
+
+        .crewmate::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 45px;
+            height: 35px;
+            background-color: #d1e4f3;
+            border: 4px solid #8b9eb3;
+            border-radius: 20px / 15px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #password {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            font-family: var(--font-body);
+            font-size: 1.5rem;
+            text-align: center;
+            width: 250px;
+        }
+        #password:focus {
+            outline: 2px solid var(--ella-pink);
+        }
+
+        #login-button {
+            padding: 10px 20px;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            transition: background-color 0.2s;
+            animation: pulse 2s infinite;
+        }
+        #login-button:hover {
+            background: var(--ella-pink);
+        }
+
+        #error-message {
+            color: var(--ella-pink);
+            margin-top: 1rem;
+            height: 1em;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* --- MAIN APP CONTAINER --- */
+        #app-container {
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: scale(2);
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            visibility: hidden;
+        }
+
+        #app-container.visible {
+            opacity: 1;
+            transform: scale(1);
+            visibility: visible;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+        }
+
+        /* --- LEAFLET CUSTOMIZATIONS --- */
+        .journey-dialogue {
+            background: rgba(26, 26, 46, 0.95);
+            border-color: var(--ella-pink);
+            border-width: 2px;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            padding: 12px 15px;
+            color: var(--text-color);
+            white-space: normal;
+            max-width: 250px;
+            line-height: 1.4;
+            box-shadow: 0 0 15px var(--ella-pink);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            backdrop-filter: blur(5px);
+        }
+        
+        .emoji-icon, .player-icon {
+            font-size: 2.5rem;
+            text-shadow: 0 0 5px black;
+            text-align: center;
+            width: 40px !important;
+            height: 40px !important;
+            transform: translate(-50%, -50%);
+        }
+
+        .player-icon {
+            animation: player-bob 2s ease-in-out infinite;
+            transition: transform 1s linear, opacity 0.5s linear;
+            z-index: 1000;
+        }
+
+        @keyframes player-bob {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, calc(-50% - 5px)); }
+        }
+        
+        .heart-icon {
+            font-size: 3rem;
+            text-shadow: 0 0 8px red;
+            animation: heartbeat 1s infinite;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+        
+        .couple-icon {
+            font-size: 4rem;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+            animation: couple-pulse 2s infinite;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        
+        @keyframes couple-pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* --- TIMELINE UI --- */
+        #timeline-ui {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.85);
+            backdrop-filter: blur(5px);
+            border-top: 2px solid var(--lyle-blue);
+            padding: 15px 20px;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateY(100px);
+            transition: transform 0.5s ease-out;
+        }
+        
+        #timeline-ui.visible {
+            transform: translateY(0);
+        }
+
+        #timeline-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .timeline-btn {
+            padding: 8px 15px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+        .timeline-btn:hover:not(:disabled) { background-color: var(--ella-pink); }
+        .timeline-btn:disabled { background-color: #555; cursor: not-allowed; opacity: 0.6; }
+
+        #timeline-info {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        #event-title { 
+            font-family: var(--font-heading); 
+            font-size: clamp(0.8rem, 2.5vw, 1rem); 
+            margin-bottom: 5px; 
+            min-height: 1em; 
+            color: var(--ella-pink);
+        }
+        #event-date { 
+            font-size: clamp(1rem, 3vw, 1.2rem); 
+            min-height: 1em; 
+            color: var(--lyle-blue);
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #progress-bar {
+            width: 0;
+            height: 100%;
+            background: var(--ella-pink);
+            transition: width 0.5s ease-out;
+        }
+
+        /* --- MODAL --- */
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        #modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #modal-content {
+            background: var(--bg-color);
+            border: 3px solid var(--lyle-blue);
+            width: 90%;
+            max-width: 700px;
+            height: 90vh;
+            max-height: 800px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(162, 210, 255, 0.5);
+        }
+        
+        #modal-header {
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        #modal-title { 
+            font-family: var(--font-heading); 
+            font-size: clamp(1rem, 3vw, 1.3rem); 
+            min-height: 1.2rem; 
+            margin-bottom: 5px; 
+            color: var(--ella-pink);
+        }
+        #modal-date { 
+            font-size: clamp(1.1rem, 3.5vw, 1.3rem); 
+            min-height: 1.3rem; 
+            color: var(--lyle-blue);
+        }
+        
+        #modal-message {
+            font-family: var(--font-body);
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--ella-pink);
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        #modal-itinerary { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            font-size: 1.4rem; 
+            line-height: 1.6; 
+        }
+        
+        .itinerary-item { display: flex; align-items: center; margin-bottom: 10px; }
+        .itinerary-icon { font-size: 1.5rem; margin-right: 10px; width: 30px; text-align: center; }
+
+        #modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+        #modal-close-btn:hover { color: var(--ella-pink); }
+        
+        /* --- TYPEWRITER CURSOR --- */
+        .typewriter-text.typing::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            #timeline-ui { 
+                flex-direction: column; 
+                padding: 10px; 
+                gap: 5px;
+            }
+            #timeline-info { order: -1; margin-bottom: 5px; }
+            #modal-content { padding: 15px; }
+            #story-text { font-size: 1.8rem; }
+            #anniversary-content {
+                padding: 15px;
+                font-size: 1.5rem;
+            }
+        }
+
+        /* --- PHOTO PREVIEW --- */
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--ella-pink);
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #aaa;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .anniversary-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--ella-pink);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .anniversary-badge.visible {
+            opacity: 1;
+        }
+        
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .photo-item {
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            border: 2px solid var(--lyle-blue);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+        
+        .photo-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal-section-title {
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+            color: var(--ella-pink);
+            border-bottom: 2px solid var(--lyle-blue);
+            padding-bottom: 5px;
+        }
+        
+        /* --- THOUGHT BUBBLE --- */
+        .thought-bubble {
+            position: absolute;
+            background: rgba(26, 26, 46, 0.95);
+            border: 2px solid var(--lyle-blue);
+            border-radius: 20px;
+            padding: 15px;
+            max-width: 300px;
+            text-align: center;
+            font-family: var(--font-body);
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px var(--lyle-blue);
+            z-index: 5000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+        }
+        
+        .thought-bubble.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* --- ANNIVERSARY MESSAGE --- */
+        #anniversary-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 4000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        #anniversary-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        #anniversary-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 4px solid var(--ella-pink);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 175, 204, 0.7);
+            text-align: center;
+        }
+        
+        #anniversary-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--ella-pink);
+            text-shadow: 0 0 10px rgba(255, 175, 204, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #anniversary-message {
+            font-family: var(--font-story);
+            font-size: 2rem;
+            line-height: 1.8;
+            color: #fff;
+            text-align: left;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        #replay-btn {
+            padding: 12px 30px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(162, 210, 255, 0.7);
+            margin-top: 20px;
+        }
+        
+        #replay-btn:hover {
+            background: var(--ella-pink);
+            transform: scale(1.05);
+        }
+        
+        #anniversary-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+        #anniversary-close-btn:hover { 
+            color: var(--ella-pink);
+            transform: scale(1.2);
+        }
+        
+        .signature {
+            font-family: var(--font-story);
+            font-size: 2.5rem;
+            text-align: right;
+            margin-top: 20px;
+            color: var(--lyle-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .heart-decoration {
+            position: absolute;
+            font-size: 4rem;
+            color: var(--ella-pink);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .heart-1 { top: 10%; left: 10%; animation: float 8s ease-in-out infinite; }
+        .heart-2 { top: 20%; right: 15%; animation: float 7s ease-in-out infinite reverse; }
+        .heart-3 { bottom: 15%; left: 20%; animation: float 9s ease-in-out infinite; }
+        .heart-4 { bottom: 10%; right: 20%; animation: float 6s ease-in-out infinite reverse; }
+        
+        .message-section {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Story Screen -->
+    <div id="story-screen">
+        <div id="story-content">
+            <h1 id="story-title">How It All Began...</h1>
+            <div id="story-text">
+                It all started with a simple Instagram follow request.<br>
+                I sent "Hey" and she responded...<br>
+                And then magic happened.<br><br>
+                What followed was a journey of love, distance,<br>
+                and countless miles traveled just to be together.<br>
+                This is our story.
+            </div>
+            <button id="story-continue">Begin Our Journey</button>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <h1 id="login-title">Our Adventure Awaits</h1>
+        <div class="crewmate-container">
+            <div class="crewmate crewmate-pink"></div>
+            <div class="crewmate crewmate-blue"></div>
+        </div>
+        <form id="login-form">
+            <input type="password" id="password" placeholder="Password">
+            <button type="submit" id="login-button">Begin</button>
+        </form>
+        <p id="error-message"></p>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app-container">
+        <div id="map"></div>
+        <div class="anniversary-badge">Ella & Lyle • July 27, 2025</div>
+    </div>
+
+    <!-- Timeline UI -->
+    <div id="timeline-ui">
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="timeline-controls">
+            <button id="prev-btn" class="timeline-btn">Prev</button>
+            <button id="next-btn" class="timeline-btn">Next</button>
+        </div>
+        <div id="timeline-info">
+            <h2 id="event-title" class="typewriter-text"></h2>
+            <p id="event-date" class="typewriter-text"></p>
+        </div>
+    </div>
+    
+    <!-- Modal for Itinerary -->
+    <div id="modal-overlay">
+        <div id="modal-content">
+            <button id="modal-close-btn">&times;</button>
+            <div id="modal-header">
+                <h2 id="modal-title" class="typewriter-text"></h2>
+                <p id="modal-date" class="typewriter-text"></p>
+            </div>
+            <div id="modal-message"></div>
+            <div id="modal-itinerary">
+                <!-- Itinerary items will be injected here by JS -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Anniversary Message -->
+    <div id="anniversary-overlay">
+        <div id="anniversary-content">
+            <button id="anniversary-close-btn">&times;</button>
+            <h1 id="anniversary-title">💙 Happy Anniversary, Ella (July 27, 2025) 💗</h1>
+            <div id="anniversary-message">
+                <div class="message-section">
+                    One year since everything changed.
+                </div>
+                
+                <div class="message-section">
+                    Ella,
+                </div>
+                
+                <div class="message-section">
+                    It’s hard to believe that a year has passed since I first held your hand on that island, since we first looked into each other’s eyes and knew—we were no longer strangers. July 27, 2024, wasn’t just a date. It was the day the world gave me something I didn’t know I was missing… you.
+                </div>
+                
+                <div class="message-section">
+                    From that first trip to Boracay, with sand between our toes and butterflies in our hearts, to the late-night calls, airport goodbyes, and long travels just to feel your hug again—we’ve lived more in one year than some people live in a lifetime. We’ve had moments of laughter that made time stop. And we’ve had pain that nearly broke us. But through it all, we stayed. We fought. We loved.
+                </div>
+                
+                <div class="message-section">
+                    This isn’t a perfect story. We both know that. We’ve made mistakes, shed tears, questioned, struggled, and grown. But maybe that’s what makes this love even more real. It’s not fragile—it’s battle-tested. It’s not based on comfort—it’s built on sacrifice, distance, and hard decisions.
+                </div>
+                
+                <div class="message-section">
+                    I remember the way your eyes lit up in D’Mall, how you looked beside the waves in Ilig-Iligan, how we held each other on those quiet Kalibo nights. I remember the sadness of every goodbye and the joy of every reunion. I remember the way you’d rest your head on my chest and how, in those moments, everything else faded.
+                </div>
+                
+                <div class="message-section">
+                    And now… here we are. No more distance. No more ticking clocks counting down to another separation. You’re here. We’re here. In Cebu. Together.
+                </div>
+                
+                <div class="message-section">
+                    This past year wasn’t just about places we went—it was about the love we built. It’s in the silly jokes, the deep talks, the forgiveness, the late-night fast food runs, the dreams we now dare to dream because we’re not alone anymore.
+                </div>
+                
+                <div class="message-section">
+                    Ella, thank you for choosing me over and over again—even when I didn’t make it easy. Thank you for growing with me, for trusting me, for letting me into your world. Thank you for making this love real.
+                </div>
+                
+                <div class="signature">
+                    I love you. Always. In all ways.
+                    <div>— Lyle 💙</div>
+                </div>
+            </div>
+            <button id="replay-btn">Relive Our Journey</button>
+            
+            <div class="heart-decoration heart-1">❤️</div>
+            <div class="heart-decoration heart-2">💙</div>
+            <div class="heart-decoration heart-3">💗</div>
+            <div class="heart-decoration heart-4">💜</div>
+        </div>
+    </div>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        let map, currentEventIndex = 0;
+        let markers = [], polylines = [], animatedIcons = [];
+        let kingIcon, queenIcon;
+        const CORRECT_PASSWORD = "ellamiro";
+        let isAnimating = false;
+        let thoughtBubbleTimeout;
+        
+        // Photo URLs provided by the user
+        const userPhotos = {
+            'boracay1stMeet': [
+                'https://photos.app.goo.gl/kRTYTvM3Rp4Tp8uE8',
+                'https://photos.app.goo.gl/ojSgdroN3gLBu8ZE9',
+                'https://photos.app.goo.gl/iFqtutZkRyUR9sZt6',
+                'https://photos.app.goo.gl/sR8HydKVPmrZuHeC6',
+                'https://photos.app.goo.gl/7my6M7HEZfDvx6Qy5'
+            ],
+            'birthdayAugust': [
+                'https://photos.app.goo.gl/16ZFW6YrMhkRTVMY6',
+                'https://photos.app.goo.gl/9YZRJJKisrBX2mwdA',
+                'https://photos.app.goo.gl/pe5Ni8T26eddVBvp8',
+                'https://photos.app.goo.gl/Up1TFo3vx9YrnPRY7',
+                'https://photos.app.goo.gl/2fy5JaN5534TnDv19'
+            ],
+            'november': [
+                'https://photos.app.goo.gl/oJRkH595NrguRGgA9',
+                'https://photos.app.goo.gl/rKL49hAzngnuSMp28',
+                'https://photos.app.goo.gl/fG8Z5UR5zxbEnNJt7',
+                'https://photos.app.goo.gl/XMSnbVuV1CXjamCb7',
+                'https://photos.app.goo.gl/Gu1rfZ1qM4Erq4VVA'
+            ],
+            'december': [
+                'https://photos.app.goo.gl/W6VR8qr5Gzz7nhY49',
+                'https://photos.app.goo.gl/7WGzbGybrAfKznFQ9',
+                'https://photos.app.goo.gl/h3ZLrjthdkJJgibK7',
+                'https://photos.app.goo.gl/gqaPivjF8PxDPdWk6',
+                'https://photos.app.goo.gl/WD9FUyUyNHcPeBF46',
+                'https://photos.app.goo.gl/f26aqCi21gCqSvR39',
+                'https://photos.app.goo.gl/YvtHFXLnmWX9NWBj9',
+                'https://photos.app.goo.gl/kbzxLaDTNnK6haaAA',
+                'https://photos.app.goo.gl/wXqNdhZY5Do51YzU7',
+                'https://photos.app.goo.gl/WMmZdGUUxwzgGun77'
+            ],
+            'april': [
+                'https://photos.app.goo.gl/W1cFhUvWz9iE1d6K9',
+                'https://photos.app.goo.gl/SymRYYdNXzw8wPcM6',
+                'https://photos.app.goo.gl/gNM5bU2TZb2shTeV7',
+                'https://photos.app.goo.gl/6n7gvaQxsjyPvxKw7',
+                'https://photos.app.goo.gl/5gPiytZmMEupaoS68',
+                'https://photos.app.goo.gl/Y3vAveYY764jDSam9',
+                'https://photos.app.goo.gl/Vat5yDDjmi1iWtH96',
+                'https://photos.app.goo.gl/VVEMndd95ZFCJV2y7',
+                'https://photos.app.goo.gl/46EoSqAsdPQsdF8Q6',
+                'https://photos.app.goo.gl/fLgEn5Ez87mzwnsr5'
+            ],
+            'backToBoracay': [
+                'https://photos.app.goo.gl/JiinCNvfMgoTgdhQA',
+                'https://photos.app.goo.gl/gXfJuGPLCdwYySX76',
+                'https://photos.app.goo.gl/3q4DPSgTeHS8hBFS9',
+                'https://photos.app.goo.gl/ZgGbJyA8DnB4W4jp6',
+                'https://photos.app.goo.gl/gvspXRwdcUbYeCFeA'
+            ],
+            'sagayCity': [
+                'https://photos.app.goo.gl/faCYHxwNRAeYnKbK8',
+                'https://photos.app.goo.gl/pL3nMWAaZgXmiQJa9',
+                'https://photos.app.goo.gl/er5a1QWZGobdqzKR7',
+                'https://photos.app.goo.gl/1Gnzp1ajeMkWM3WG6'
+            ]
+        };
+
+        // Helper to get photos, recycling if needed to ensure at least 5
+        function getPhotos(key, minCount = 5) {
+            let photos = userPhotos[key] || [];
+            if (photos.length < minCount) {
+                const originalLength = photos.length;
+                for (let i = 0; photos.length < minCount; i++) {
+                    photos.push(photos[i % originalLength]);
+                }
+            }
+            return photos;
+        }
+
+        // Timeline events data with all journeys and activities
+        const events = [
+            // Journey 1: First Trip to Boracay (July 26, 2024)
+            {
+                type: 'journey',
+                title: 'First Trip to Boracay',
+                date: 'July 26, 2024',
+                message: "This was the beginning of everything—our first leap into the unknown. From the hum of the motorcycle to the quiet hum of the plane, I carried the nervous excitement of finally meeting you. Boracay welcomed us not just with its white sands, but with the start of a love I never imagined would bloom so fast, so deep. I saw you, truly, for the first time—and I knew this was something rare.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3110, 123.9794], 
+                        mode: '🏍️', 
+                        story: "With butterflies in my stomach, I hopped on the motorcycle heading to the airport. The wind in my face matched the whirlwind of emotions inside me - excitement, nervousness, anticipation." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [11.9242, 121.9542], 
+                        mode: '✈️', 
+                        story: "As the plane took off, I looked out the window at the shrinking city below. My thoughts were filled with you - wondering what you'd be like in person, how your voice would sound, and if this trip would change everything." 
+                    },
+                    { 
+                        from: [11.9242, 121.9542], 
+                        to: [11.9358, 121.9408], 
+                        mode: '🚗', 
+                        story: "The car ride felt endless as we navigated through unfamiliar roads. Every minute brought me closer to you, and the tropical air seemed to hum with possibility." 
+                    },
+                    { 
+                        from: [11.9358, 121.9408], 
+                        to: [11.9621, 121.9249], 
+                        mode: '⛴️', 
+                        story: "The ferry ride revealed the stunning blues of the ocean. I remember thinking how the water's beauty paled in comparison to what I imagined your smile would be like." 
+                    },
+                    { 
+                        from: [11.9621, 121.9249], 
+                        to: [11.9678, 121.9260], 
+                        mode: '🚗', 
+                        story: "The final car ride to the resort - my heart pounding like a drum. In just moments, I'd see you for the first time, and our story would truly begin." 
+                    }
+                ],
+                dialogue: {
+                    king: "I'm here! I can't believe I'm finally seeing you!",
+                    queen: "You made it! I've been counting the minutes!"
+                },
+                description: "Our first trip to Boracay was magical. We explored the island together for the first time.",
+                photos: getPhotos('boracay1stMeet')
+            },
+            // Activity 1: Exploring Boracay (July 27-29, 2024)
+            {
+                type: 'activity',
+                title: 'Exploring Boracay',
+                date: 'July 27-29, 2024',
+                message: "We weren’t just exploring the island—we were discovering each other. Every beach, every alley, every smile shared in secret told me: this wasn’t just a trip, this was the start of something sacred. From Manoc-Manoc to the calm of Ilig-Iligan, we painted our own love story into every sunset.",
+                location: [11.9678, 121.9260],
+                description: "Our first days together, exploring the island. We visited Manoc-Manoc, Balabag, D'Mall, and Ilig-Iligan Beach. Stayed at Hennan Palm Beach Resort and LUXX Boutique Hotel.",
+                photos: getPhotos('birthdayAugust') // Using 'birthdayAugust' photos here
+            },
+            // Journey 2: The Hardest Goodbye (July 30, 2024)
+            {
+                type: 'journey',
+                title: 'The Hardest Goodbye',
+                date: 'July 30, 2024',
+                message: "Leaving you that day tore a piece of my soul. Saying goodbye in the same place we fell deeper in love—it felt like leaving behind half of me. But I held on to one thing: that this wasn’t the end. This was a promise. I’ll return. I’ll always return.",
+                legs: [
+                    { 
+                        from: [11.9678, 121.9260], 
+                        to: [11.9242, 121.9542], 
+                        mode: '🚗', 
+                        story: "The car ride back to the airport was filled with silence. I kept stealing glances at you, memorizing your face, knowing it would have to last until we met again." 
+                    },
+                    { 
+                        from: [11.9242, 121.9542], 
+                        to: [10.3110, 123.9794], 
+                        mode: '✈️', 
+                        story: "As the plane ascended, I watched our island paradise shrink below. With every mile, my heart felt heavier, already missing your laughter, your touch, your presence." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [10.3157, 123.8854], 
+                        mode: '🚗', 
+                        story: "The final ride home to an empty apartment. The memories of our days together played like a film reel in my mind, each scene more precious than the last." 
+                    }
+                ],
+                preDialogue: {
+                    king: "I don't want to leave... It feels like I'm leaving a part of myself behind.",
+                    queen: "I know... This goodbye hurts more than I imagined. But we'll see each other soon, I promise."
+                },
+                dialogue: {
+                    king: "I'll be back soon! This isn't goodbye, just 'see you later'!",
+                    queen: "I'll miss you every minute! Text me when you land!"
+                },
+                description: "Saying goodbye after our first trip was one of the hardest moments.",
+                photos: getPhotos('boracay1stMeet', 5) // Recycling from 'boracay1stMeet'
+            },
+            // Activity 2: Days in Kalibo (Sept 30 - Oct 3, 2024)
+            {
+                type: 'activity',
+                title: 'Days in Kalibo',
+                date: 'Sept 30 - Oct 3, 2024',
+                message: "These were our quiet days. No islands, no grand adventures. Just us—laughing over fries at Jollibee, sharing stories in a humble room. It was simple. It was perfect. I saw what life with you could be like—and I wanted it all.",
+                location: [11.7125, 122.3663],
+                description: "Spending precious time together in Kalibo. We enjoyed meals at Jollibee and relaxed at RedDoorz.",
+                photos: getPhotos('november', 5) // Recycling from 'november'
+            },
+            // Journey 3: Reunited in Aklan (Sept 28-29, 2024) - Note: This event's date is before the previous one, but I'll keep the order as given in the original code for now.
+            {
+                type: 'journey',
+                title: 'Reunited in Aklan',
+                date: 'Sept 28-29, 2024',
+                message: "Miles couldn’t keep me away. This long journey—by land, sea, and heart—was proof of what we meant to each other. I crossed islands for you. Every stop was a countdown to you, and when I saw your smile again, it was like the world turned right.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3773, 123.6386], 
+                        mode: '🚌', 
+                        story: "The bus ride felt different this time - filled with hope instead of uncertainty. I was coming back to you, and that made every bump in the road worthwhile." 
+                    },
+                    { 
+                        from: [10.3773, 123.6386], 
+                        to: [10.4888, 123.4155], 
+                        mode: '⛴️', 
+                        story: "Standing on the ferry deck, I watched the waves and thought about how each one brought me closer to you. The sea breeze carried the promise of your embrace." 
+                    },
+                    { 
+                        from: [10.4888, 123.4155], 
+                        to: [10.6966, 122.5600], 
+                        mode: '🚌', 
+                        story: "Another bus, another stretch of road. I passed the time rereading our messages, each word a reminder of what awaited me at the end of this journey." 
+                    },
+                    { 
+                        from: [10.6966, 122.5600], 
+                        to: [11.7060, 122.3690], 
+                        mode: '⛴️', 
+                        story: "The second ferry ride - the islands growing greener, the air warmer. With each nautical mile, my anticipation grew into joyful impatience." 
+                    },
+                    { 
+                        from: [11.7060, 122.3690], 
+                        to: [11.7125, 122.3663], 
+                        mode: '🚌', 
+                        story: "The final bus ride - familiar roads now. My heart raced knowing that in just minutes, I'd see you again after what felt like an eternity apart." 
+                    }
+                ],
+                preDialogue: {
+                    king: "I can't believe I'm coming back to you so soon! Counting down the hours...",
+                    queen: "Hurry! I've missed you more than words can say. Every minute apart has felt like a year!"
+                },
+                dialogue: {
+                    king: "Made it! That journey felt endless, but seeing you makes it all worthwhile!",
+                    queen: "You're finally here! I've been dreaming of this moment since you left!"
+                },
+                description: "After months apart, we were finally reunited in Aklan.",
+                photos: getPhotos('november')
+            },
+            // Journey 4: The Long Journey Home (Oct 4-5, 2024)
+            {
+                type: 'journey',
+                title: 'The Long Journey Home',
+                date: 'Oct 4-5, 2024',
+                message: "This was the cost of love at a distance. Every mile away from you hurt—but every kilometer I traveled back reminded me of what I was willing to endure just to be with you again. It wasn’t goodbye. Just... see you soon.",
+                legs: [
+                    { 
+                        from: [11.7125, 122.3663], 
+                        to: [10.7210, 122.5500], 
+                        mode: ' ', 
+                        story: "The bus pulled away from the curb, and I watched you grow smaller through the rear window. My heart felt like it was being stretched across the islands." 
+                    },
+                    { 
+                        from: [10.7210, 122.5500], 
+                        to: [10.6966, 122.5600], 
+                        mode: '⛴️', 
+                        story: "On the ferry, I stood at the stern, watching the wake disappear toward the place I'd just left. Each wave felt like another goodbye." 
+                    },
+                    { 
+                        from: [10.6966, 122.5600], 
+                        to: [10.4900, 123.4200], 
+                        mode: '🚌', 
+                        story: "The long bus ride through unfamiliar landscapes. I passed the time looking at photos of us, already nostalgic for moments that had just passed." 
+                    },
+                    { 
+                        from: [10.4900, 123.4200], 
+                        to: [10.3773, 123.6386], 
+                        mode: '⛴️', 
+                        story: "Another ferry, another stretch of sea. The salt air mixed with the salt of tears I couldn't hold back. Distance is the cruelest test of love." 
+                    },
+                    { 
+                        from: [10.3773, 123.6386], 
+                        to: [10.3157, 123.8854], 
+                        mode: '🚌', 
+                        story: "The final bus ride home. The scenery grew familiar, but nothing felt like home anymore because home was now where you were." 
+                    }
+                ],
+                preDialogue: {
+                    king: "Leaving you gets harder every time. How can I say goodbye when it feels so wrong?",
+                    queen: "I know, my love. But remember - every goodbye brings us closer to the day we won't have to say it anymore."
+                },
+                dialogue: {
+                    king: "That was a long trip! But worth every second just to be with you.",
+                    queen: "Can't wait for next time! Each visit makes our bond stronger."
+                },
+                description: "The journey back home was long but filled with memories.",
+                photos: getPhotos('november', 5) // Recycling from 'november'
+            },
+            // Journey 5: Back to Aklan (Nov 10-12, 2024)
+            {
+                type: 'journey',
+                title: 'Back to Aklan',
+                date: 'Nov 10-12, 2024',
+                message: "Even when we had just days, I took the skies for you. Because sometimes love means making time—even when the world says you can’t. Even for a short while, holding your hand again made everything worth it.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3110, 123.9794], 
+                        mode: '🚗', 
+                        story: "The familiar drive to the airport - this time with less nervousness, more excitement. I knew exactly what awaited me at the other end." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [11.9242, 121.9542], 
+                        mode: '✈️', 
+                        story: "Looking down at the clouds, I smiled thinking how each flight brought me closer to you. The distance was just geography when the heart knows its destination." 
+                    },
+                    { 
+                        from: [11.9242, 121.9542], 
+                        to: [11.7125, 122.3663], 
+                        mode: '🚗', 
+                        story: "The final ride - familiar roads now. Each landmark was a signpost counting down the minutes until I'd see your smile again." 
+                    }
+                ],
+                preDialogue: {
+                    king: "Guess who's coming to see you again? I couldn't stay away!",
+                    queen: "Best surprise ever! I've been missing you like crazy!"
+                },
+                dialogue: {
+                    king: "Back in Kalibo! These short visits are like oxygen - I need them to breathe!",
+                    queen: "So happy to see you! Even if it's just for a little while, it means everything."
+                },
+                description: "A quick trip back to Aklan to spend more time together.",
+                photos: getPhotos('november')
+            },
+            // Journey 6: December Avenue Concert (Dec 13-16, 2024)
+            {
+                type: 'journey',
+                title: 'December Avenue Concert',
+                date: 'Dec 13-16, 2024',
+                message: "That concert wasn’t just a night of music. It was a night where every lyric sounded like us. Standing beside you, swaying to songs that mirrored our story—I felt it again: this is forever.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3110, 123.9794], 
+                        mode: '🚗', 
+                        story: "The drive to the airport was filled with excitement. Tonight we'd share our first concert together, and I couldn't wait to see you singing along." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [11.9242, 121.9542], 
+                        mode: '✈️', 
+                        story: "Flying to you for a concert - how could I resist? Music and you - my two favorite things combined." 
+                    },
+                    { 
+                        from: [11.9242, 121.9542], 
+                        to: [11.7125, 122.3663], 
+                        mode: '🚗', 
+                        story: "The final stretch. I imagined your face when you'd see me, the way you'd jump into my arms like you always did." 
+                    }
+                ],
+                preDialogue: {
+                    king: "Guess what? I got us tickets to December Avenue! I'm coming down for the show!",
+                    queen: "No way! That's my favorite band! You really know how to make a girl feel special."
+                },
+                dialogue: {
+                    king: "Let's enjoy the concert! This night is going to be unforgettable!",
+                    queen: "With you? Every moment is unforgettable! Let's make memories!"
+                },
+                description: "Attending the December Avenue concert together in Kalibo.",
+                photos: getPhotos('december')
+            },
+            // Journey 7: Ati-Atihan Festival (Jan 15-18, 2025)
+            {
+                type: 'journey',
+                title: 'Ati-Atihan Festival',
+                date: 'Jan 15-18, 2025',
+                message: "Among the colors and the crowds, I found joy in watching you light up. You weren’t just my love—you were my muse, my home in unfamiliar cities. I didn’t care about the noise or the travel—only that I was with you.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3110, 123.9794], 
+                        mode: '🚗', 
+                        story: "Packed and ready for the festival! I imagined your face when we'd be dancing in the streets together." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [10.7130, 122.5440], 
+                        mode: '✈️', 
+                        story: "A short flight to Iloilo, then the journey would continue. Anything to experience your culture with you." 
+                    },
+                    { 
+                        from: [10.7130, 122.5440], 
+                        to: [11.7050, 122.3700], 
+                        mode: '🚌', 
+                        story: "The bus ride to Kalibo - filled with festive energy. I could already hear the drums and your laughter." 
+                    }
+                ],
+                preDialogue: {
+                    king: "I wouldn't miss Ati-Atihan for the world! Especially not when it means seeing you in your element.",
+                    queen: "You're going to love it! I can't wait to show you my culture and dance with you in the streets!"
+                },
+                dialogue: {
+                    king: "Let's celebrate! This energy is incredible!",
+                    queen: "Happy Ati-Atihan! I'm so glad I get to share this with you!"
+                },
+                description: "Experiencing the vibrant Ati-Atihan Festival together.",
+                photos: getPhotos('december', 5) // Recycling from 'december'
+            },
+            // Journey 8: First Anniversary Trip (April 4-7, 2025)
+            {
+                type: 'journey',
+                title: 'First Anniversary Trip',
+                date: 'April 4-7, 2025',
+                message: "One year. We made it. Against the odds, through the distance, through the pain—we arrived here. Celebrating in the same place where it all started, I looked at you and saw the same girl I met in Boracay... only this time, you were more: my partner, my best friend, my future.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.3110, 123.9794], 
+                        mode: '🚗', 
+                        story: "Driving to the airport with a heart full of gratitude. One year of loving you - what an incredible journey it's been." 
+                    },
+                    { 
+                        from: [10.3110, 123.9794], 
+                        to: [11.9242, 121.9542], 
+                        mode: '✈️', 
+                        story: "Flying back to where it all began. So much has changed, yet the magic between us feels the same as that first meeting." 
+                    },
+                    { 
+                        from: [11.9242, 121.9542], 
+                        to: [11.7120, 122.3660], 
+                        mode: '🚗', 
+                        story: "The final ride - now familiar roads. Each landmark a memory of our journey together. One year down, forever to go." 
+                    }
+                ],
+                preDialogue: {
+                    king: "Happy anniversary, my love! Can you believe it's been a year? I'm coming to celebrate with you!",
+                    queen: "A whole year! It feels like forever and no time at all. Hurry here so I can kiss you properly!"
+                },
+                dialogue: {
+                    king: "Happy Anniversary! This year with you has been the best of my life!",
+                    queen: "One amazing year! Here's to a lifetime more of adventures together!"
+                },
+                description: "Celebrating our first anniversary in Kalibo with a visit to Pastrana Park.",
+                photos: getPhotos('april')
+            },
+            // Journey 9: Meeting the Family in Sagay (June 23-25, 2025)
+            {
+                type: 'journey',
+                title: 'Meeting the Family in Sagay',
+                date: 'June 23-25, 2025',
+                message: "This journey was different. I wasn’t just coming for you—I was stepping into your world, your past, your roots. Meeting your family felt like you were slowly opening every door of your heart. And I was honored to walk through them.",
+                legs: [
+                    { 
+                        from: [10.3157, 123.8854], 
+                        to: [10.8892, 123.4096], 
+                        mode: '🚌/⛴️', 
+                        story: "The journey to meet your family - a mix of excitement and nerves. I wanted so badly to make a good impression on the people who made you who you are." 
+                    },
+                    { 
+                        from: [10.8892, 123.4096], 
+                        to: [10.8900, 123.4100], 
+                        mode: '🚗', 
+                        story: "Arriving in Sagay - your hometown. I tried to imagine you growing up here, and felt grateful to be welcomed into your world." 
+                    }
+                ],
+                preDialogue: {
+                    king: "I'm both excited and nervous about meeting your family! I hope they like me.",
+                    queen: "Don't worry! They're going to love you just like I do. Just be your wonderful self."
+                },
+                dialogue: {
+                    king: "Excited to meet everyone! I want them to know how much I love their daughter.",
+                    queen: "Welcome to my hometown! Get ready to be spoiled with love and food!"
+                },
+                description: "Visiting Sagay City and meeting the family. Stayed at Osner Hotel and visited Sagay Seaport.",
+                photos: getPhotos('sagayCity')
+            },
+            // Journey 10: Full Circle in Boracay (June 26-29, 2025)
+            {
+                type: 'journey',
+                title: 'Full Circle in Boracay',
+                date: 'June 26-29, 2025',
+                message: "We came full circle. Back to where it all began. But we weren’t the same. Stronger. Wiser. More in love. And when we walked the same sands again, it wasn’t just nostalgia—it was closure and a new beginning all at once.",
+                legs: [
+                    { 
+                        from: [10.8900, 123.4100], 
+                        to: [11.9358, 121.9408], 
+                        mode: '🚌', 
+                        story: "Returning to Boracay with you felt like completing a circle. So much had changed since that first nervous trip." 
+                    },
+                    { 
+                        from: [11.9358, 121.9408], 
+                        to: [11.9670, 121.9260], 
+                        mode: '⛴️', 
+                        story: "The ferry ride to Boracay - now familiar waters. I held your hand and remembered how I'd dreamed of this moment a year ago." 
+                    },
+                    { 
+                        from: [11.9670, 121.9260], 
+                        to: [11.9650, 121.9260], 
+                        mode: '🚗', 
+                        story: "The final ride - now with the confidence of love tested and proven. We had come full circle, stronger than ever." 
+                    }
+                ],
+                preDialogue: {
+                    king: "Back to where it all began! Can you believe how far we've come?",
+                    queen: "It feels like a lifetime ago and just yesterday. Let's make new memories on our special island!"
+                },
+                dialogue: {
+                    king: "Back where it all began! Look how far we've come, my love.",
+                    queen: "Full circle moment! And this time, it's just the beginning of forever."
+                },
+                description: "Returning to Boracay where our journey began. Visited Station 3 and Epic Boracay.",
+                photos: getPhotos('backToBoracay')
+            },
+            // Journey 11: The Final Move (June 30 - July 5, 2025)
+            {
+                type: 'journey',
+                title: 'The Final Move',
+                date: 'June 30 - July 5, 2025',
+                message: "This wasn’t a trip. This was a turning point. You were moving—not just to a new city—but into a shared life with me. We weren’t visiting each other anymore. We were finally choosing to live the same story, side by side.",
+                legs: [
+                    { 
+                        from: [11.9670, 121.9260], 
+                        to: [10.8900, 123.4100], 
+                        mode: '⛴️/🚌', 
+                        story: "The journey to bring you home - finally! This trip had a different energy. We weren't just visiting - we were building a life.", 
+                        traveler: "king" 
+                    },
+                    { 
+                        from: [10.8900, 123.4100], 
+                        to: [10.6700, 122.9500], 
+                        mode: '🚌', 
+                        story: "Watching your hometown disappear behind us, I held your hand. This was it - the start of our new life together.", 
+                        traveler: "queen" 
+                    },
+                    { 
+                        from: [10.6700, 122.9500], 
+                        to: [10.3773, 123.6386], 
+                        mode: '⛴️', 
+                        story: "The ferry ride to Cebu - now as partners building a future. The sea had carried us to each other so many times, now it carried us home.", 
+                        traveler: "queen" 
+                    },
+                    { 
+                        from: [10.3773, 123.6386], 
+                        to: [10.3150, 123.8850], 
+                        mode: '🚌', 
+                        story: "The final bus ride to our new home. Not 'my place' or 'your place' - our place. Our life. Our future.", 
+                        traveler: "queen" 
+                    }
+                ],
+                preDialogue: {
+                    king: "Ready to start our life together? No more goodbyes, just good mornings.",
+                    queen: "I've never been more ready for anything in my life. Let's go home, my love."
+                },
+                dialogue: {
+                    king: "New chapter begins! Together in Cebu, just like we always dreamed!",
+                    queen: "Together in Cebu! This is just the beginning of our forever."
+                },
+                description: "The final move to start our life together in Cebu.",
+                photos: getPhotos('sagayCity', 5) // Recycling from 'sagayCity'
+            },
+            // Epilogue: Together in Cebu (July 8-25, 2025)
+            {
+                type: 'activity',
+                title: 'Together in Cebu',
+                date: 'July 8-25, 2025',
+                message: "This is what we always dreamed of: waking up in the same place, laughing over coffee, walking through malls hand-in-hand, and creating routines that felt like home. Not just travelers anymore. We arrived—finally—not just at a place, but at a life built together.",
+                location: [10.3157, 123.8854],
+                description: "Our life together in Cebu begins. We've enjoyed dates at SM Seaside, Ayala Malls, Carbon Market, and many other places.",
+                photos: getPhotos('backToBoracay', 5) // Recycling from 'backToBoracay'
+            }
+        ];
+
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup login form
+            const loginForm = document.getElementById('login-form');
+            loginForm.addEventListener('submit', handleLogin);
+            
+            // Setup timeline navigation
+            document.getElementById('prev-btn').addEventListener('click', showPreviousEvent);
+            document.getElementById('next-btn').addEventListener('click', showNextEvent);
+            
+            // Setup modal close button
+            document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+            
+            // Setup story continue button
+            document.getElementById('story-continue').addEventListener('click', () => {
+                document.getElementById('story-screen').classList.remove('visible');
+                document.querySelector('.anniversary-badge').classList.add('visible');
+                document.getElementById('timeline-ui').classList.add('visible');
+                showEvent(currentEventIndex);
+            });
+            
+            // Setup anniversary overlay
+            document.getElementById('anniversary-close-btn').addEventListener('click', () => {
+                document.getElementById('anniversary-overlay').classList.remove('visible');
+            });
+            
+            // Setup replay button
+            document.getElementById('replay-btn').addEventListener('click', resetJourney);
+            
+            // Initialize map
+            initMap();
+        });
+
+        // ========== LOGIN HANDLING ==========
+        function handleLogin(e) {
+            e.preventDefault();
+            const passwordInput = document.getElementById('password');
+            const errorMessage = document.getElementById('error-message');
+            
+            if (passwordInput.value === CORRECT_PASSWORD) {
+                // Correct password - transition to story
+                errorMessage.textContent = '';
+                
+                const loginScreen = document.getElementById('login-screen');
+                loginScreen.classList.add('hidden');
+                
+                setTimeout(() => {
+                    const appContainer = document.getElementById('app-container');
+                    appContainer.classList.add('visible');
+                    
+                    // Show story screen
+                    setTimeout(() => {
+                        document.getElementById('story-screen').classList.add('visible');
+                    }, 500);
+                }, 800);
+            } else {
+                // Incorrect password
+                errorMessage.textContent = 'Incorrect password. Try again.';
+                passwordInput.value = '';
+            }
+        }
+
+        // ========== MAP FUNCTIONS ==========
+        function initMap() {
+            // Create map with dark theme
+            map = L.map('map', {
+                zoomControl: false,
+                dragging: false,
+                zoomSnap: 0.1
+            }).setView([10.3157, 123.8854], 10); // Cebu coordinates
+            
+            // Add dark tile layer
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Create custom icons
+            kingIcon = L.divIcon({
+                className: 'player-icon',
+                html: '🤴',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+            
+            queenIcon = L.divIcon({
+                className: 'player-icon',
+                html: '👸',
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+        }
+
+        function clearMap() {
+            // Remove all markers, lines, and animations
+            markers.forEach(marker => map.removeLayer(marker));
+            polylines.forEach(polyline => map.removeLayer(polyline));
+            animatedIcons.forEach(icon => map.removeLayer(icon));
+            
+            markers = [];
+            polylines = [];
+            animatedIcons = [];
+        }
+
+        // ========== EVENT HANDLING ==========
+        function showEvent(index) {
+            if (index < 0 || index >= events.length) return;
+            
+            clearMap();
+            currentEventIndex = index;
+            const event = events[index];
+            
+            // Update timeline UI
+            document.getElementById('event-title').textContent = event.title;
+            document.getElementById('event-date').textContent = event.date;
+            
+            // Update progress bar
+            const progress = ((index + 1) / events.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Enable/disable navigation buttons
+            document.getElementById('prev-btn').disabled = (index === 0) || isAnimating;
+            document.getElementById('next-btn').disabled = (index === events.length - 1) || isAnimating;
+            
+            // Handle different event types
+            if (event.type === 'journey') {
+                if (event.preDialogue) {
+                    showPreJourneyDialogue(event);
+                } else {
+                    animateJourney(event);
+                }
+            } else if (event.type === 'activity') {
+                showActivity(event);
+            }
+        }
+
+        function showPreJourneyDialogue(event) {
+            isAnimating = true;
+            document.getElementById('prev-btn').disabled = true;
+            document.getElementById('next-btn').disabled = true;
+            
+            // Show king at starting point
+            const kingStart = L.marker(event.legs[0].from, { icon: kingIcon }).addTo(map);
+            animatedIcons.push(kingStart);
+            
+            // Show queen at starting point
+            const queenStart = L.marker(
+                [event.legs[0].from[0] - 0.01, event.legs[0].from[1]], 
+                { icon: queenIcon }
+            ).addTo(map);
+            animatedIcons.push(queenStart);
+            
+            // Center map on the starting point
+            map.setView(event.legs[0].from, 13);
+            
+            // Show dialogue
+            showDialogue(kingStart, event.preDialogue.king);
+            setTimeout(() => {
+                showDialogue(queenStart, event.preDialogue.queen);
+                
+                // After dialogue, wait 5 seconds then start journey
+                setTimeout(() => {
+                    map.closePopup();
+                    animateJourney(event);
+                }, 5000);
+            }, 3000);
+        }
+
+        function showPreviousEvent() {
+            if (currentEventIndex > 0 && !isAnimating) {
+                showEvent(currentEventIndex - 1);
+            }
+        }
+
+        function showNextEvent() {
+            if (currentEventIndex < events.length - 1 && !isAnimating) {
+                if (thoughtBubbleTimeout) {
+                    clearTimeout(thoughtBubbleTimeout);
+                    hideThoughtBubble();
+                }
+                showThoughtBubble("I need to see her again...", () => {
+                    showEvent(currentEventIndex + 1);
+                });
+            } else if (currentEventIndex === events.length - 1 && !isAnimating) {
+                // Show anniversary message when at the last event
+                document.getElementById('anniversary-overlay').classList.add('visible');
+            }
+        }
+
+        // ========== JOURNEY ANIMATION ==========
+        function animateJourney(journey) {
+            isAnimating = true;
+            let currentLeg = 0;
+            
+            // Disable next button during animation
+            document.getElementById('prev-btn').disabled = true;
+            document.getElementById('next-btn').disabled = true;
+            
+            function animateNextLeg() {
+                if (currentLeg >= journey.legs.length) {
+                    // Journey complete - show reunion
+                    showReunion(journey);
+                    return;
+                }
+                
+                const leg = journey.legs[currentLeg];
+                currentLeg++;
+                
+                // Determine traveler for this leg
+                const traveler = leg.traveler || 'king';
+                const travelerIcon = traveler === 'king' ? kingIcon : queenIcon;
+                
+                // Create travel icon
+                const travelIcon = L.divIcon({
+                    className: 'emoji-icon',
+                    html: leg.mode,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+                
+                // Add traveler at start point
+                const travelerStart = L.marker(leg.from, { icon: travelerIcon }).addTo(map);
+                animatedIcons.push(travelerStart);
+                
+                // Add vehicle at start point
+                const vehicle = L.marker(leg.from, { icon: travelIcon }).addTo(map);
+                animatedIcons.push(vehicle);
+                
+                // Create line for the route
+                const line = L.polyline([leg.from, leg.to], {
+                    color: traveler === 'king' ? '#a2d2ff' : '#ffafcc',
+                    weight: 3,
+                    dashArray: '5, 10'
+                }).addTo(map);
+                polylines.push(line);
+                
+                // Center map on the route
+                const bounds = L.latLngBounds([leg.from, leg.to]);
+                map.fitBounds(bounds, { padding: [100, 100] });
+                
+                // Show story thought
+                showThoughtBubble(leg.story);
+                
+                // Animate the markers along the line
+                animateMarkerAlongLine([travelerStart, vehicle], line, () => {
+                    // Animation complete for this leg
+                    map.removeLayer(travelerStart);
+                    map.removeLayer(vehicle);
+                    
+                    // Wait 2 seconds before next leg
+                    setTimeout(animateNextLeg, 2000);
+                });
+            }
+            
+            // Start the journey animation
+            animateNextLeg();
+        }
+
+        function showReunion(journey) {
+            const finalDestination = journey.legs[journey.legs.length - 1].to;
+            
+            // Add queen slightly to the left of destination
+            const queen = L.marker(
+                [finalDestination[0], finalDestination[1] - 0.005], 
+                { icon: queenIcon }
+            ).addTo(map);
+            animatedIcons.push(queen);
+            
+            // Add king slightly to the right of destination
+            const king = L.marker(
+                [finalDestination[0], finalDestination[1] + 0.005], 
+                { icon: kingIcon }
+            ).addTo(map);
+            animatedIcons.push(king);
+            
+            // Center map on the destination
+            map.setView(finalDestination, 15);
+            
+            // Show dialogue
+            setTimeout(() => {
+                showDialogue(king, journey.dialogue.king);
+                
+                setTimeout(() => {
+                    showDialogue(queen, journey.dialogue.queen);
+                    
+                    // Animate them coming together
+                    setTimeout(() => {
+                        // Move both to center
+                        king.setLatLng(finalDestination);
+                        queen.setLatLng(finalDestination);
+                        
+                        // Add couple emoji
+                        const coupleIcon = L.divIcon({
+                            className: 'couple-icon',
+                            html: '👩‍❤️‍👨',
+                            iconSize: [50, 50],
+                            iconAnchor: [25, 50]
+                        });
+                        
+                        const coupleMarker = L.marker(
+                            [finalDestination[0] + 0.001, finalDestination[1]], 
+                            { icon: coupleIcon }
+                        ).addTo(map);
+                        animatedIcons.push(coupleMarker);
+                        
+                        // Show modal after reunion
+                        setTimeout(() => {
+                            showModal(journey);
+                            isAnimating = false;
+                            
+                            // Re-enable navigation buttons
+                            document.getElementById('prev-btn').disabled = (currentEventIndex === 0);
+                            document.getElementById('next-btn').disabled = (currentEventIndex === events.length - 1);
+                            
+                            // If this is the last event, show anniversary message after modal
+                            if (currentEventIndex === events.length - 1) {
+                                setTimeout(() => {
+                                    document.getElementById('anniversary-overlay').classList.add('visible');
+                                }, 1000);
+                            }
+                        }, 2000);
+                    }, 2000);
+                }, 2000);
+            }, 1000);
+        }
+
+        function showThoughtBubble(text, callback) {
+            // Create thought bubble element if not exists
+            let bubble = document.querySelector('.thought-bubble');
+            if (!bubble) {
+                bubble = document.createElement('div');
+                bubble.className = 'thought-bubble';
+                document.body.appendChild(bubble);
+            }
+            
+            bubble.textContent = text;
+            bubble.classList.add('visible');
+            
+            // Position near the center of the map
+            const mapRect = document.getElementById('map').getBoundingClientRect();
+            bubble.style.top = `${mapRect.top + mapRect.height/2 - 100}px`;
+            bubble.style.left = `${mapRect.left + mapRect.width/2 - 150}px`;
+            
+            // Hide after delay
+            setTimeout(() => {
+                bubble.classList.remove('visible');
+                if (callback) setTimeout(callback, 1000);
+            }, 5000);
+        }
+        
+        function hideThoughtBubble() {
+            const bubble = document.querySelector('.thought-bubble');
+            if (bubble) bubble.classList.remove('visible');
+        }
+
+        function showDialogue(marker, text) {
+            L.popup({ offset: [0, -50], className: 'journey-dialogue' })
+                .setLatLng(marker.getLatLng())
+                .setContent(text)
+                .openOn(map);
+        }
+
+        function animateMarkerAlongLine(markers, line, onComplete) {
+            const points = line.getLatLngs();
+            const numPoints = points.length;
+            let currentIndex = 0;
+            const duration = 5000; // 5 seconds per leg
+            
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Calculate current position along the line
+                const segmentIndex = Math.floor(progress * (numPoints - 1));
+                const segmentProgress = (progress * (numPoints - 1)) - segmentIndex;
+                
+                if (segmentIndex < numPoints - 1) {
+                    const startPoint = points[segmentIndex];
+                    const endPoint = points[segmentIndex + 1];
+                    
+                    const lat = startPoint.lat + (endPoint.lat - startPoint.lat) * segmentProgress;
+                    const lng = startPoint.lng + (endPoint.lng - startPoint.lng) * segmentProgress;
+                    
+                    // Update all markers
+                    markers.forEach(marker => {
+                        marker.setLatLng([lat, lng]);
+                    });
+                    
+                    // Center map on the marker (cinematic following)
+                    map.setView([lat, lng], map.getZoom(), { animate: false });
+                    
+                    requestAnimationFrame(animate);
+                } else {
+                    // Animation complete
+                    markers.forEach(marker => {
+                        marker.setLatLng(points[numPoints - 1]);
+                    });
+                    if (onComplete) onComplete();
+                }
+            }
+            
+            animate();
+        }
+
+        // ========== ACTIVITY HANDLING ==========
+        function showActivity(activity) {
+            // Add marker for activity location
+            const marker = L.marker(activity.location).addTo(map);
+            markers.push(marker);
+            
+            // Set map view to activity location
+            map.setView(activity.location, 13);
+            
+            // Create photo preview popup
+            const previewPopup = L.popup({ offset: [0, -40] })
+                .setContent(`
+                    <div class="photo-preview">
+                        ${activity.title}
+                    </div>
+                `);
+            
+            marker.bindPopup(previewPopup);
+            
+            // Show modal immediately for activities
+            setTimeout(() => {
+                showModal(activity);
+                isAnimating = false;
+                
+                // Re-enable navigation buttons
+                document.getElementById('prev-btn').disabled = (currentEventIndex === 0);
+                document.getElementById('next-btn').disabled = (currentEventIndex === events.length - 1);
+                
+                // If this is the last event, show anniversary message after modal
+                if (currentEventIndex === events.length - 1) {
+                    setTimeout(() => {
+                        document.getElementById('anniversary-overlay').classList.add('visible');
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        // ========== MODAL FUNCTIONS ==========
+        function showModal(event) {
+            document.getElementById('modal-title').textContent = event.title;
+            document.getElementById('modal-date').textContent = event.date;
+            document.getElementById('modal-message').textContent = event.message;
+            
+            const itineraryContainer = document.getElementById('modal-itinerary');
+            itineraryContainer.innerHTML = '';
+            
+            if (event.type === 'journey') {
+                // Add journey details to modal
+                itineraryContainer.innerHTML += `
+                    <div class="modal-section-title">Journey Story:</div>
+                    <div style="margin-bottom: 15px; font-style: italic;">
+                        ${event.legs.map(leg => `<p>${leg.story}</p>`).join('')}
+                    </div>
+                `;
+                
+                itineraryContainer.innerHTML += `
+                    <div class="modal-section-title">Our Journey Photos</div>
+                    <div class="photo-gallery">
+                        ${event.photos.map(photo => `
+                            <div class="photo-item" style="background-image: url('${photo}')"></div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (event.type === 'activity') {
+                // Add activity details to modal
+                itineraryContainer.innerHTML = `
+                    <div class="modal-section-title">Activity Details</div>
+                    <div style="margin-bottom: 15px;">
+                        ${event.description}
+                    </div>
+                    <div class="modal-section-title">Our Memories</div>
+                    <div class="photo-gallery">
+                        ${event.photos.map(photo => `
+                            <div class="photo-item" style="background-image: url('${photo}')"></div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // Show modal
+            document.getElementById('modal-overlay').classList.add('visible');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('visible');
+        }
+        
+        // ========== RESET JOURNEY ==========
+        function resetJourney() {
+            // Hide anniversary overlay
+            document.getElementById('anniversary-overlay').classList.remove('visible');
+            
+            // Reset to first event
+            currentEventIndex = 0;
+            
+            // Clear the map
+            clearMap();
+            
+            // Reset progress bar
+            document.getElementById('progress-bar').style.width = '0%';
+            
+            // Re-enable navigation buttons
+            document.getElementById('prev-btn').disabled = false;
+            document.getElementById('next-btn').disabled = false;
+            
+            // Show the first event
+            setTimeout(() => {
+                showEvent(currentEventIndex);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
