@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ella & Lyle's Anniversary Adventure</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- GLOBAL STYLES & VARIABLES --- */
+        :root {
+            --bg-color: #1a1a2e;
+            --ella-pink: #ffafcc;
+            --lyle-blue: #a2d2ff;
+            --text-color: #ffffff;
+            --font-heading: 'Press Start 2P', cursive;
+            --font-body: 'VT323', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        #login-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #login-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            margin-bottom: 2rem;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 1rem;
+        }
+
+        .crewmate-container {
+            display: flex;
+            gap: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .crewmate {
+            width: 80px;
+            height: 100px;
+            border-radius: 40px 40px 25px 25px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .crewmate-pink { background-color: var(--ella-pink); border: 4px solid #c98da1; }
+        .crewmate-blue { background-color: var(--lyle-blue); border: 4px solid #81a7cc; animation-delay: -1.5s; }
+
+        .crewmate::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            width: 45px;
+            height: 35px;
+            background-color: #d1e4f3;
+            border: 4px solid #8b9eb3;
+            border-radius: 20px / 15px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #password {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 10px 15px;
+            font-family: var(--font-body);
+            font-size: 1.5rem;
+            text-align: center;
+            width: 250px;
+        }
+        #password:focus {
+            outline: 2px solid var(--ella-pink);
+        }
+
+        #login-button {
+            padding: 10px 20px;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            transition: background-color 0.2s;
+        }
+        #login-button:hover {
+            background: var(--ella-pink);
+        }
+
+        #error-message {
+            color: var(--ella-pink);
+            margin-top: 1rem;
+            height: 1em;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* --- COMING SOON SCREEN --- */
+        #coming-soon-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        #coming-soon-screen.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #coming-soon-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        #countdown {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: var(--ella-pink);
+            text-shadow: 3px 3px 0 var(--lyle-blue);
+            margin-top: 2rem;
+            letter-spacing: 0.1em;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <h1 id="login-title">Our Adventure Awaits</h1>
+        <div class="crewmate-container">
+            <div class="crewmate crewmate-pink"></div>
+            <div class="crewmate crewmate-blue"></div>
+        </div>
+        <form id="login-form">
+            <input type="password" id="password" placeholder="Password">
+            <button type="submit" id="login-button">Begin</button>
+        </form>
+        <p id="error-message"></p>
+    </div>
+
+    <!-- Coming Soon Screen -->
+    <div id="coming-soon-screen">
+        <h1 id="coming-soon-title">Our Full Adventure<br>Launches In...</h1>
+        <div id="countdown"></div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginScreen = document.getElementById('login-screen');
+        const loginForm = document.getElementById('login-form');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('error-message');
+        const comingSoonScreen = document.getElementById('coming-soon-screen');
+        const countdownElement = document.getElementById('countdown');
+
+        // --- Countdown Timer Logic ---
+        function startCountdown() {
+            // Set the target time to 10 PM (22:00) today in the Philippines timezone (UTC+8)
+            const today = new Date();
+            const targetTime = new Date(Date.UTC(
+                today.getUTCFullYear(), 
+                today.getUTCMonth(), 
+                today.getUTCDate(), 
+                22 - 8, // 22:00 PHT is 14:00 UTC
+                0, 
+                0
+            ));
+
+            // If it's already past 10 PM PHT today, set the target for tomorrow
+            if (targetTime < today) {
+                targetTime.setUTCDate(targetTime.getUTCDate() + 1);
+            }
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = targetTime - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    countdownElement.innerHTML = "Launched!";
+                    return;
+                }
+
+                // Time calculations for hours, minutes and seconds
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Add leading zeros
+                const formattedHours = String(hours).padStart(2, '0');
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+
+                // Display the result
+                countdownElement.innerHTML = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            }, 1000);
+        }
+
+        // --- Login Logic ---
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (passwordInput.value.toLowerCase() === 'ellamiro') {
+                loginScreen.classList.add('hidden');
+                comingSoonScreen.classList.add('visible');
+                startCountdown(); // Start the countdown on successful login
+            } else {
+                errorMessage.textContent = 'Incorrect Password!';
+                passwordInput.value = '';
+                setTimeout(() => errorMessage.textContent = '', 2000);
+            }
+        });
+    });
+    </script>
+</body>
+</html>
