@@ -498,6 +498,10 @@
             #timeline-info { order: -1; margin-bottom: 5px; }
             #modal-content { padding: 15px; }
             #story-text { font-size: 1.8rem; }
+            #anniversary-content {
+                padding: 15px;
+                font-size: 1.5rem;
+            }
         }
 
         /* --- PHOTO PREVIEW --- */
@@ -591,6 +595,133 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* --- ANNIVERSARY MESSAGE --- */
+        #anniversary-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 4000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+        }
+        
+        #anniversary-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        #anniversary-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 4px solid var(--ella-pink);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 175, 204, 0.7);
+            text-align: center;
+        }
+        
+        #anniversary-title {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--ella-pink);
+            text-shadow: 0 0 10px rgba(255, 175, 204, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #anniversary-message {
+            font-family: var(--font-story);
+            font-size: 2rem;
+            line-height: 1.8;
+            color: #fff;
+            text-align: left;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        #replay-btn {
+            padding: 12px 30px;
+            font-family: var(--font-heading);
+            font-size: 1.2rem;
+            cursor: pointer;
+            background: var(--lyle-blue);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(162, 210, 255, 0.7);
+            margin-top: 20px;
+        }
+        
+        #replay-btn:hover {
+            background: var(--ella-pink);
+            transform: scale(1.05);
+        }
+        
+        #anniversary-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+        #anniversary-close-btn:hover { 
+            color: var(--ella-pink);
+            transform: scale(1.2);
+        }
+        
+        .signature {
+            font-family: var(--font-story);
+            font-size: 2.5rem;
+            text-align: right;
+            margin-top: 20px;
+            color: var(--lyle-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        
+        .heart-decoration {
+            position: absolute;
+            font-size: 4rem;
+            color: var(--ella-pink);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .heart-1 { top: 10%; left: 10%; animation: float 8s ease-in-out infinite; }
+        .heart-2 { top: 20%; right: 15%; animation: float 7s ease-in-out infinite reverse; }
+        .heart-3 { bottom: 15%; left: 20%; animation: float 9s ease-in-out infinite; }
+        .heart-4 { bottom: 10%; right: 20%; animation: float 6s ease-in-out infinite reverse; }
+        
+        .message-section {
+            margin-bottom: 25px;
+        }
     </style>
 </head>
 <body>
@@ -659,6 +790,62 @@
             </div>
         </div>
     </div>
+    
+    <!-- Anniversary Message -->
+    <div id="anniversary-overlay">
+        <div id="anniversary-content">
+            <button id="anniversary-close-btn">&times;</button>
+            <h1 id="anniversary-title">💙 Happy Anniversary, Ella (July 27, 2025) 💗</h1>
+            <div id="anniversary-message">
+                <div class="message-section">
+                    One year since everything changed.
+                </div>
+                
+                <div class="message-section">
+                    Ella,
+                </div>
+                
+                <div class="message-section">
+                    It’s hard to believe that a year has passed since I first held your hand on that island, since we first looked into each other’s eyes and knew—we were no longer strangers. July 27, 2024, wasn’t just a date. It was the day the world gave me something I didn’t know I was missing… you.
+                </div>
+                
+                <div class="message-section">
+                    From that first trip to Boracay, with sand between our toes and butterflies in our hearts, to the late-night calls, airport goodbyes, and long travels just to feel your hug again—we’ve lived more in one year than some people live in a lifetime. We’ve had moments of laughter that made time stop. And we’ve had pain that nearly broke us. But through it all, we stayed. We fought. We loved.
+                </div>
+                
+                <div class="message-section">
+                    This isn’t a perfect story. We both know that. We’ve made mistakes, shed tears, questioned, struggled, and grown. But maybe that’s what makes this love even more real. It’s not fragile—it’s battle-tested. It’s not based on comfort—it’s built on sacrifice, distance, and hard decisions.
+                </div>
+                
+                <div class="message-section">
+                    I remember the way your eyes lit up in D’Mall, how you looked beside the waves in Ilig-Iligan, how we held each other on those quiet Kalibo nights. I remember the sadness of every goodbye and the joy of every reunion. I remember the way you’d rest your head on my chest and how, in those moments, everything else faded.
+                </div>
+                
+                <div class="message-section">
+                    And now… here we are. No more distance. No more ticking clocks counting down to another separation. You’re here. We’re here. In Cebu. Together.
+                </div>
+                
+                <div class="message-section">
+                    This past year wasn’t just about places we went—it was about the love we built. It’s in the silly jokes, the deep talks, the forgiveness, the late-night fast food runs, the dreams we now dare to dream because we’re not alone anymore.
+                </div>
+                
+                <div class="message-section">
+                    Ella, thank you for choosing me over and over again—even when I didn’t make it easy. Thank you for growing with me, for trusting me, for letting me into your world. Thank you for making this love real.
+                </div>
+                
+                <div class="signature">
+                    I love you. Always. In all ways.
+                    <div>— Lyle 💙</div>
+                </div>
+            </div>
+            <button id="replay-btn">Relive Our Journey</button>
+            
+            <div class="heart-decoration heart-1">❤️</div>
+            <div class="heart-decoration heart-2">💙</div>
+            <div class="heart-decoration heart-3">💗</div>
+            <div class="heart-decoration heart-4">💜</div>
+        </div>
+    </div>
 
     <!-- Leaflet.js -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -672,6 +859,80 @@
         let isAnimating = false;
         let thoughtBubbleTimeout;
         
+        // Photo URLs provided by the user
+        const userPhotos = {
+            'boracay1stMeet': [
+                'https://photos.app.goo.gl/kRTYTvM3Rp4Tp8uE8',
+                'https://photos.app.goo.gl/ojSgdroN3gLBu8ZE9',
+                'https://photos.app.goo.gl/iFqtutZkRyUR9sZt6',
+                'https://photos.app.goo.gl/sR8HydKVPmrZuHeC6',
+                'https://photos.app.goo.gl/7my6M7HEZfDvx6Qy5'
+            ],
+            'birthdayAugust': [
+                'https://photos.app.goo.gl/16ZFW6YrMhkRTVMY6',
+                'https://photos.app.goo.gl/9YZRJJKisrBX2mwdA',
+                'https://photos.app.goo.gl/pe5Ni8T26eddVBvp8',
+                'https://photos.app.goo.gl/Up1TFo3vx9YrnPRY7',
+                'https://photos.app.goo.gl/2fy5JaN5534TnDv19'
+            ],
+            'november': [
+                'https://photos.app.goo.gl/oJRkH595NrguRGgA9',
+                'https://photos.app.goo.gl/rKL49hAzngnuSMp28',
+                'https://photos.app.goo.gl/fG8Z5UR5zxbEnNJt7',
+                'https://photos.app.goo.gl/XMSnbVuV1CXjamCb7',
+                'https://photos.app.goo.gl/Gu1rfZ1qM4Erq4VVA'
+            ],
+            'december': [
+                'https://photos.app.goo.gl/W6VR8qr5Gzz7nhY49',
+                'https://photos.app.goo.gl/7WGzbGybrAfKznFQ9',
+                'https://photos.app.goo.gl/h3ZLrjthdkJJgibK7',
+                'https://photos.app.goo.gl/gqaPivjF8PxDPdWk6',
+                'https://photos.app.goo.gl/WD9FUyUyNHcPeBF46',
+                'https://photos.app.goo.gl/f26aqCi21gCqSvR39',
+                'https://photos.app.goo.gl/YvtHFXLnmWX9NWBj9',
+                'https://photos.app.goo.gl/kbzxLaDTNnK6haaAA',
+                'https://photos.app.goo.gl/wXqNdhZY5Do51YzU7',
+                'https://photos.app.goo.gl/WMmZdGUUxwzgGun77'
+            ],
+            'april': [
+                'https://photos.app.goo.gl/W1cFhUvWz9iE1d6K9',
+                'https://photos.app.goo.gl/SymRYYdNXzw8wPcM6',
+                'https://photos.app.goo.gl/gNM5bU2TZb2shTeV7',
+                'https://photos.app.goo.gl/6n7gvaQxsjyPvxKw7',
+                'https://photos.app.goo.gl/5gPiytZmMEupaoS68',
+                'https://photos.app.goo.gl/Y3vAveYY764jDSam9',
+                'https://photos.app.goo.gl/Vat5yDDjmi1iWtH96',
+                'https://photos.app.goo.gl/VVEMndd95ZFCJV2y7',
+                'https://photos.app.goo.gl/46EoSqAsdPQsdF8Q6',
+                'https://photos.app.goo.gl/fLgEn5Ez87mzwnsr5'
+            ],
+            'backToBoracay': [
+                'https://photos.app.goo.gl/JiinCNvfMgoTgdhQA',
+                'https://photos.app.goo.gl/gXfJuGPLCdwYySX76',
+                'https://photos.app.goo.gl/3q4DPSgTeHS8hBFS9',
+                'https://photos.app.goo.gl/ZgGbJyA8DnB4W4jp6',
+                'https://photos.app.goo.gl/gvspXRwdcUbYeCFeA'
+            ],
+            'sagayCity': [
+                'https://photos.app.goo.gl/faCYHxwNRAeYnKbK8',
+                'https://photos.app.goo.gl/pL3nMWAaZgXmiQJa9',
+                'https://photos.app.goo.gl/er5a1QWZGobdqzKR7',
+                'https://photos.app.goo.gl/1Gnzp1ajeMkWM3WG6'
+            ]
+        };
+
+        // Helper to get photos, recycling if needed to ensure at least 5
+        function getPhotos(key, minCount = 5) {
+            let photos = userPhotos[key] || [];
+            if (photos.length < minCount) {
+                const originalLength = photos.length;
+                for (let i = 0; photos.length < minCount; i++) {
+                    photos.push(photos[i % originalLength]);
+                }
+            }
+            return photos;
+        }
+
         // Timeline events data with all journeys and activities
         const events = [
             // Journey 1: First Trip to Boracay (July 26, 2024)
@@ -717,13 +978,7 @@
                     queen: "You made it! I've been counting the minutes!"
                 },
                 description: "Our first trip to Boracay was magical. We explored the island together for the first time.",
-                photos: [
-                    'https://images.unsplash.com/photo-1590523278191-995cbcda646b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1559494007-9f5847c49d94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1589508705593-8a78a4a5ea0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('boracay1stMeet')
             },
             // Activity 1: Exploring Boracay (July 27-29, 2024)
             {
@@ -733,13 +988,7 @@
                 message: "We weren’t just exploring the island—we were discovering each other. Every beach, every alley, every smile shared in secret told me: this wasn’t just a trip, this was the start of something sacred. From Manoc-Manoc to the calm of Ilig-Iligan, we painted our own love story into every sunset.",
                 location: [11.9678, 121.9260],
                 description: "Our first days together, exploring the island. We visited Manoc-Manoc, Balabag, D'Mall, and Ilig-Iligan Beach. Stayed at Hennan Palm Beach Resort and LUXX Boutique Hotel.",
-                photos: [
-                    'https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('birthdayAugust') // Using 'birthdayAugust' photos here
             },
             // Journey 2: The Hardest Goodbye (July 30, 2024)
             {
@@ -776,15 +1025,19 @@
                     queen: "I'll miss you every minute! Text me when you land!"
                 },
                 description: "Saying goodbye after our first trip was one of the hardest moments.",
-                photos: [
-                    'https://images.unsplash.com/photo-1552422535-c45813c61732?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('boracay1stMeet', 5) // Recycling from 'boracay1stMeet'
             },
-            // Journey 3: Reunited in Aklan (Sept 28-29, 2024)
+            // Activity 2: Days in Kalibo (Sept 30 - Oct 3, 2024)
+            {
+                type: 'activity',
+                title: 'Days in Kalibo',
+                date: 'Sept 30 - Oct 3, 2024',
+                message: "These were our quiet days. No islands, no grand adventures. Just us—laughing over fries at Jollibee, sharing stories in a humble room. It was simple. It was perfect. I saw what life with you could be like—and I wanted it all.",
+                location: [11.7125, 122.3663],
+                description: "Spending precious time together in Kalibo. We enjoyed meals at Jollibee and relaxed at RedDoorz.",
+                photos: getPhotos('november', 5) // Recycling from 'november'
+            },
+            // Journey 3: Reunited in Aklan (Sept 28-29, 2024) - Note: This event's date is before the previous one, but I'll keep the order as given in the original code for now.
             {
                 type: 'journey',
                 title: 'Reunited in Aklan',
@@ -831,29 +1084,7 @@
                     queen: "You're finally here! I've been dreaming of this moment since you left!"
                 },
                 description: "After months apart, we were finally reunited in Aklan.",
-                photos: [
-                    'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1493238792000-8113da705763?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
-            },
-            // Activity 2: Days in Kalibo (Sept 30 - Oct 3, 2024)
-            {
-                type: 'activity',
-                title: 'Days in Kalibo',
-                date: 'Sept 30 - Oct 3, 2024',
-                message: "These were our quiet days. No islands, no grand adventures. Just us—laughing over fries at Jollibee, sharing stories in a humble room. It was simple. It was perfect. I saw what life with you could be like—and I wanted it all.",
-                location: [11.7125, 122.3663],
-                description: "Spending precious time together in Kalibo. We enjoyed meals at Jollibee and relaxed at RedDoorz.",
-                photos: [
-                    'https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('november')
             },
             // Journey 4: The Long Journey Home (Oct 4-5, 2024)
             {
@@ -865,7 +1096,7 @@
                     { 
                         from: [11.7125, 122.3663], 
                         to: [10.7210, 122.5500], 
-                        mode: '🚌', 
+                        mode: ' ', 
                         story: "The bus pulled away from the curb, and I watched you grow smaller through the rear window. My heart felt like it was being stretched across the islands." 
                     },
                     { 
@@ -902,13 +1133,7 @@
                     queen: "Can't wait for next time! Each visit makes our bond stronger."
                 },
                 description: "The journey back home was long but filled with memories.",
-                photos: [
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('november', 5) // Recycling from 'november'
             },
             // Journey 5: Back to Aklan (Nov 10-12, 2024)
             {
@@ -938,20 +1163,14 @@
                 ],
                 preDialogue: {
                     king: "Guess who's coming to see you again? I couldn't stay away!",
-                    queen: "You're coming? Best surprise ever! I've been missing you like crazy!"
+                    queen: "Best surprise ever! I've been missing you like crazy!"
                 },
                 dialogue: {
                     king: "Back in Kalibo! These short visits are like oxygen - I need them to breathe!",
                     queen: "So happy to see you! Even if it's just for a little while, it means everything."
                 },
                 description: "A quick trip back to Aklan to spend more time together.",
-                photos: [
-                    'https://images.unsplash.com/photo-1569949380643-6e746ecaa3bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('november')
             },
             // Journey 6: December Avenue Concert (Dec 13-16, 2024)
             {
@@ -988,13 +1207,7 @@
                     queen: "With you? Every moment is unforgettable! Let's make memories!"
                 },
                 description: "Attending the December Avenue concert together in Kalibo.",
-                photos: [
-                    'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1506157786151-b8491531f063?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('december')
             },
             // Journey 7: Ati-Atihan Festival (Jan 15-18, 2025)
             {
@@ -1031,13 +1244,7 @@
                     queen: "Happy Ati-Atihan! I'm so glad I get to share this with you!"
                 },
                 description: "Experiencing the vibrant Ati-Atihan Festival together.",
-                photos: [
-                    'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('december', 5) // Recycling from 'december'
             },
             // Journey 8: First Anniversary Trip (April 4-7, 2025)
             {
@@ -1074,13 +1281,7 @@
                     queen: "One amazing year! Here's to a lifetime more of adventures together!"
                 },
                 description: "Celebrating our first anniversary in Kalibo with a visit to Pastrana Park.",
-                photos: [
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('april')
             },
             // Journey 9: Meeting the Family in Sagay (June 23-25, 2025)
             {
@@ -1111,13 +1312,7 @@
                     queen: "Welcome to my hometown! Get ready to be spoiled with love and food!"
                 },
                 description: "Visiting Sagay City and meeting the family. Stayed at Osner Hotel and visited Sagay Seaport.",
-                photos: [
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('sagayCity')
             },
             // Journey 10: Full Circle in Boracay (June 26-29, 2025)
             {
@@ -1154,13 +1349,7 @@
                     queen: "Full circle moment! And this time, it's just the beginning of forever."
                 },
                 description: "Returning to Boracay where our journey began. Visited Station 3 and Epic Boracay.",
-                photos: [
-                    'https://images.unsplash.com/photo-1559494007-9f5847c49d94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1589508705593-8a78a4a5ea0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1506477331477-33d5d8b3dc85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1590523278191-995cbcda646b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('backToBoracay')
             },
             // Journey 11: The Final Move (June 30 - July 5, 2025)
             {
@@ -1207,13 +1396,7 @@
                     queen: "Together in Cebu! This is just the beginning of our forever."
                 },
                 description: "The final move to start our life together in Cebu.",
-                photos: [
-                    'https://images.unsplash.com/photo-1533575770077-052fa2c609fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('sagayCity', 5) // Recycling from 'sagayCity'
             },
             // Epilogue: Together in Cebu (July 8-25, 2025)
             {
@@ -1223,13 +1406,7 @@
                 message: "This is what we always dreamed of: waking up in the same place, laughing over coffee, walking through malls hand-in-hand, and creating routines that felt like home. Not just travelers anymore. We arrived—finally—not just at a place, but at a life built together.",
                 location: [10.3157, 123.8854],
                 description: "Our life together in Cebu begins. We've enjoyed dates at SM Seaside, Ayala Malls, Carbon Market, and many other places.",
-                photos: [
-                    'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80',
-                    'https://images.unsplash.com/photo-1488085061387-422e29b40080?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80'
-                ]
+                photos: getPhotos('backToBoracay', 5) // Recycling from 'backToBoracay'
             }
         ];
 
@@ -1253,6 +1430,14 @@
                 document.getElementById('timeline-ui').classList.add('visible');
                 showEvent(currentEventIndex);
             });
+            
+            // Setup anniversary overlay
+            document.getElementById('anniversary-close-btn').addEventListener('click', () => {
+                document.getElementById('anniversary-overlay').classList.remove('visible');
+            });
+            
+            // Setup replay button
+            document.getElementById('replay-btn').addEventListener('click', resetJourney);
             
             // Initialize map
             initMap();
@@ -1409,6 +1594,9 @@
                 showThoughtBubble("I need to see her again...", () => {
                     showEvent(currentEventIndex + 1);
                 });
+            } else if (currentEventIndex === events.length - 1 && !isAnimating) {
+                // Show anniversary message when at the last event
+                document.getElementById('anniversary-overlay').classList.add('visible');
             }
         }
 
@@ -1536,6 +1724,13 @@
                             // Re-enable navigation buttons
                             document.getElementById('prev-btn').disabled = (currentEventIndex === 0);
                             document.getElementById('next-btn').disabled = (currentEventIndex === events.length - 1);
+                            
+                            // If this is the last event, show anniversary message after modal
+                            if (currentEventIndex === events.length - 1) {
+                                setTimeout(() => {
+                                    document.getElementById('anniversary-overlay').classList.add('visible');
+                                }, 1000);
+                            }
                         }, 2000);
                     }, 2000);
                 }, 2000);
@@ -1649,6 +1844,13 @@
                 // Re-enable navigation buttons
                 document.getElementById('prev-btn').disabled = (currentEventIndex === 0);
                 document.getElementById('next-btn').disabled = (currentEventIndex === events.length - 1);
+                
+                // If this is the last event, show anniversary message after modal
+                if (currentEventIndex === events.length - 1) {
+                    setTimeout(() => {
+                        document.getElementById('anniversary-overlay').classList.add('visible');
+                    }, 1000);
+                }
             }, 1000);
         }
 
@@ -1700,6 +1902,30 @@
 
         function closeModal() {
             document.getElementById('modal-overlay').classList.remove('visible');
+        }
+        
+        // ========== RESET JOURNEY ==========
+        function resetJourney() {
+            // Hide anniversary overlay
+            document.getElementById('anniversary-overlay').classList.remove('visible');
+            
+            // Reset to first event
+            currentEventIndex = 0;
+            
+            // Clear the map
+            clearMap();
+            
+            // Reset progress bar
+            document.getElementById('progress-bar').style.width = '0%';
+            
+            // Re-enable navigation buttons
+            document.getElementById('prev-btn').disabled = false;
+            document.getElementById('next-btn').disabled = false;
+            
+            // Show the first event
+            setTimeout(() => {
+                showEvent(currentEventIndex);
+            }, 500);
         }
     </script>
 </body>
